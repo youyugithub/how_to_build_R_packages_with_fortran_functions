@@ -24,3 +24,5 @@ f90add_dotfortran <- function(a, b)
 }
 
 5. Build the package. Done.
+
+Reference: https://github.com/wrathematics/CompiledExamples
