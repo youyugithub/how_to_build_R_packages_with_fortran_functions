@@ -6,14 +6,11 @@ File -> New project -> New directory -> R package with Rcpp
 
 2. Put fortran functions in /scr (e.g. f77.f, f90.f90)
 
-3. In Makevars, add
+3. In NAMESPACE, make sure that the followings are there
 
-PKG_CFLAGS = -w
-PKG_FFLAGS = $(SAFE_FFLAGS) -w
-PKG_LIBS = $(RCPP_LDFLAGS) $(FLIBS) -lstdc++
-
-CISH_OBJS = wrappers_c.o wrappers_cxx.o
-FT_OBJS = f90.o f77.o
+useDynLib(packagewithfortran2, .registration=TRUE)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
 
 4. Wrap the functions using R functions:
 
