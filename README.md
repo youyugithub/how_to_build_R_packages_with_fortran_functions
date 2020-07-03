@@ -8,17 +8,21 @@ File -> New project -> New directory -> R package with Rcpp
 
 3. In NAMESPACE, make sure that the followings are there
 
+```
 useDynLib(packagewithfortran2, .registration=TRUE)
 exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp, evalCpp)
+```
 
 4. Wrap the functions using R functions:
 
+```
 f90add_dotfortran <- function(a, b)
 {
   ret <- .Fortran("f90add", as.double(a), as.double(b), ret=double(1))
   ret$ret
 }
+```
 
 5. Build the package. Done.
 
