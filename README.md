@@ -27,3 +27,60 @@ f90add_dotfortran <- function(a, b)
 5. Build the package. Done.
 
 Reference: https://github.com/wrathematics/CompiledExamples
+
+# However the above method won't work when there are combinations of .f and c++ arma files
+
+Here is a workaround by using a c wrapper:
+
+1. Put [f90.f90] file in src:
+```
+subroutine add(AA,ndim)
+integer::ndim
+double precision::AA(ndim,ndim,ndim)
+AA(1,1,1)=AA(1,1,1)+1d0
+end subroutine
+```
+2. write c wrapper [wrappers_c.c]
+```
+#include <R.h>
+#include <Rinternals.h>
+#include "prototypes.h"
+
+SEXP R_f90add(SEXP AA, SEXP ndim)
+{
+  //SEXP ret;
+  //PROTECT(ret = allocVector(REALSXP, 1));
+  
+  F77_CALL(add)(REAL(AA), ndim);
+  
+  //UNPROTECT(1);
+  return AA;
+}
+```
+3. write c header [prototypes.h]
+```
+#ifndef PROTOTYPES_H
+#define PROTOTYPES_H
+
+#include <R.h>
+#include <Rinternals.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void F77_NAME(add)(double *AA, int *ndim);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+```
+4. Finally, add an R wrapper [fortran_wrappers.R]
+```
+f90add_cwrap <- function(AA, ndim)
+{
+  .Call("R_f90add", AA, ndim)
+}
+```
