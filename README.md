@@ -84,3 +84,30 @@ f90add_cwrap <- function(AA, ndim)
   .Call("R_f90add", AA, ndim)
 }
 ```
+
+Reference: https://github.com/wrathematics/CompiledExamples
+
+# When there are arrays data transfer from C to fortran will cause errors.
+
+In this case, put the following in the [src/Makevars]:
+
+```
+PKG_CFLAGS = -w
+PKG_FFLAGS = $(SAFE_FFLAGS) -w
+PKG_LIBS = $(RCPP_LDFLAGS) $(FLIBS) -lstdc++
+
+FT_OBJS = f90.o f90add.o f90_local_const_cov_est_mult.o 
+
+OBJECTS = $(CISH_OBJS) $(FT_OBJS) $(R_OBJS)
+
+all: $(SHLIB)
+$(SHLIB): $(OBJECTS)
+
+
+clean:
+	@rm -rf *.o *.mod *.d *.rc *.so *.dylib *.dll *.a *.lib $(SHLIB) $(OBJECTS)
+```
+
+f90.o f90add.o f90_local_const_cov_est_mult.o 
+
+is the list of fortran o files
