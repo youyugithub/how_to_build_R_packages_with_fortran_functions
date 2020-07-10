@@ -111,3 +111,7 @@ clean:
 f90.o f90add.o f90_local_const_cov_est_mult.o 
 
 is the list of fortran o files
+
+# end
+
+https://www.avrahamadler.com/2018/12/09/the-need-for-speed-part-1-building-an-r-package-with-fortran/
